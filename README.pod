@@ -1,0 +1,62 @@
+=head1 NAME
+
+Kayu - A simple AJAX framework
+
+=head1 SYNOPSIS
+
+Include C<ku/core.js>:
+
+    <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ku="kxml">
+    <head>
+      <script type="text/javascript" src="jslib/ku/core.js"></script>
+      <link rel="stylesheet" href="css/default.css"></link>
+    </head>
+    <body>
+
+Binding a view to a model (data/authors.json):
+
+    <div ku:data="dsAuthors:data/authors.json" style="display:none">
+      <div ku:state="loading">loading...</div>
+      <div ku:state="ready">
+        <ul ku:eachinner="dsAuthors">
+          <li ku:select="selected" ku:hover="hover">
+              {last_name}, {first_name}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+This is a bit tricky, the C<dsAuthors::books> bit references a field
+in the above data which is a URI used to fetch the list of books:
+
+    <div ku:data="dsBooks:{dsAuthors::books}" style="display:none">
+      <div ku:state="loading">loading...</div>
+      <div ku:state="ready">
+        <ul>
+          <li ku:if="'{dsAuthors::first_name}' == 'Isaac'" ku:each="dsBooks" style="color:red">
+            {title}, {pub_date}
+          </li>
+          <li ku:elsif="'{dsAuthors::first_name}' == 'Neal'" ku:each="dsBooks" style="color:green">
+            {title}, {pub_date}
+          </li>
+          <li ku:else="ku:else" ku:each="dsBooks">{title}, {pub_date}</li>
+        </ul>
+      </div>
+    </div>
+
+Record binding:
+
+    <div ku:rowdata="dsAuthors">
+      <p>
+        You selected Author: <em>{first_name} {last_name}</em>
+      </p>
+      <b>Genre:</b> {genre}<br /> <b>Comment:</b> {intro}
+    </div>
+
+=head1 DESCRIPTION
+
+Experimental AJAX framework. The idea is to implement a pull-based view layer
+by expressing bindings in HTML directly and then pulling in JSON models which
+bind to the C<ku:data> attributed elements. Check out the test.html file and
+the stuff in the ./data directory.
+

@@ -1,0 +1,233 @@
+/* vim:sw=2
+ */
+body {
+  font-family : Arial, Helvetica, sans-serif;
+  font-size : 12px;
+  line-height : 16px;
+  height : 100%;
+}
+
+.ku-button {
+  background-image : url(/images/button-left.png);
+  background-repeat : no-repeat;
+  padding-left : 2px;
+}
+.ku-button-cap {
+  background-image : url(/images/button-right.png);
+  background-position : right;
+  padding-right : 2px;
+}
+.ku-button-label {
+  background-image : url(/images/button-gradient.png);
+  text-decoration : none;
+  color : black;
+  font-weight : bold;
+  font-size : 12px;
+  text-align : center;
+  display : block;
+  height : 19px;
+  padding-top : 6px;
+}
+.ku-button a:hover {
+  color : blue;
+}
+.ku-throbber {
+  background-image : url(/images/throbber.gif);
+  background-repeat : no-repeat;
+  min-height : 24px;
+  height : 100%;
+  width : 100%;
+}
+.ku-throbber span {
+  margin-left : 30px;
+}
+
+/* ========== Tabs ========== */
+.ku-tab-bar {
+  display : block;
+  margin : 0px;
+  padding : 0px;
+  background : #EEE;
+  height : 24px;
+  line-height:16px;
+}
+
+.ku-tab {
+  background : url('/images/controls/button.png');
+  display : block;
+  float :left;
+  margin : 0px;
+  padding : 0px;
+  margin-left : 2px;
+  font-size : 13px;
+  line-height:16px;
+  height : 24px;
+}
+.ku-tab.over .ku-tab-label {
+  background : #DDF8DD;
+  color : darkgreen;
+}
+.ku-tab.selected .ku-tab-label {
+  background : white;
+  color : darkgreen;
+  height : 19px;
+}
+.ku-tab.selected {
+  position : relative;
+}
+.ku-tab .ku-tab-label {
+  vertical-align : middle;
+  padding : 2px 10px 2px 10px;
+  font-weight : bold;
+  display : block;
+  height:18px;
+}
+.ku-tab-close {
+  width : 12px;
+  height : 12px;
+  background : url('/images/icons/gtk-close.png');
+  border : none;
+  position : relative;
+  top : 2px;
+  margin-left : 6px;
+}
+
+.ku-calendar-toggle input {
+  display : block;
+}
+.ku-calendar-toggle {
+  background-image : url(/images/icons/calendar.png);
+  background-position : right;
+  background-repeat : no-repeat;
+  padding-right : 16px;
+  display : block;
+}
+
+.ku-number-input input {
+  text-align: right;
+}
+.ku-number-input .ku-incr-button,
+.ku-number-input .ku-decr-button {
+  background : buttonface;
+  border : 1px outset buttonface;
+  width : 12px;
+  height : 12px;
+}
+.ku-number-input .ku-incr-button {
+  background-image : url(/images/icons/bullet_arrow_up.png);
+  background-position : center center;
+}
+.ku-number-input .ku-decr-button {
+  background-image : url(/images/icons/bullet_arrow_down.png);
+  background-position : center center;
+}
+
+.ku-calendar {
+  border : 1px solid #999;
+  border-color : #CCC #666 #666 #CCC;
+  background : white;
+  width : 152px;
+}
+.ku-calendar-foot,
+.ku-calendar-head {
+  border : 1px solid #FFF;
+  border-color : #FFF #DDD #DDD #FFF;
+  background : #DEF;
+  height : 24px;
+}
+.ku-calendar-foot {
+  height : 16px;
+}
+.ku-calendar-foot a {
+  display :block;
+  width : 48%;
+  border : 1px solid #DEF;
+  text-align : center;
+}
+
+.ku-calendar-today-button { float : left }
+.ku-calendar-none-button { float : right }
+
+.ku-calendar-foot a:hover {
+  border : 1px outset buttonface;
+}
+.ku-calendar .ku-month-cell {
+  text-align : center;
+  width : 65px;
+  height : 16px;
+}
+.ku-calendar-head .ku-prev-button,
+.ku-calendar-head .ku-next-button {
+  width : 12px;
+  height : 16px;
+  display : block;
+  vertical-align: middle;
+}
+.ku-calendar-head .ku-prev-button {
+  background-image : url(/images/icons/resultset_previous.png);
+}
+.ku-calendar-head .ku-next-button {
+  background-image : url(/images/icons/resultset_next.png);
+}
+.ku-calendar-head input {
+  font-size : 10px;
+  width : 40px;
+}
+.ku-calendar-body th,
+.ku-calendar-body td {
+  font-size : 10px;
+}
+.ku-calendar-body th {
+  color : white;
+  background : green;
+}
+.ku-calendar-body td {
+  border-right : 1px solid green;
+  border-bottom : 1px solid green;
+  width : 20px;
+  height : 20px;
+  text-align: center;
+  cursor : pointer;
+  padding : 1px;
+}
+.ku-calendar-body td:hover {
+  background : gray;
+}
+.ku-calendar-body {
+  border-top : 1px solid green;
+  border-left : 1px solid green;
+}
+.ku-calendar-body td.ku-day-selected:hover,
+.ku-calendar-body .ku-day-selected {
+  background : red;
+  color : white;
+}
+.ku-day-selected a {
+  color : white;
+  text-decoration : none;
+  font-weight : bold;
+}
+.ku-calendar-body .ku-day-disabled {
+  color : #ccc;
+  cursor : pointer;
+}
+
+.ku-range-input {
+  width : 160px;
+  position : relative;
+  border : 1px solid #666;
+  background : #DEF;
+}
+.ku-range-input .ku-range-rule {
+  margin-top : 9px;
+  margin-bottom : 9px;
+  border-bottom : 1px solid #666;
+  font-size : 0px;
+}
+
+.ku-enum-item {
+}
+
+.ku-validation-error {
+  border : 2px solid red;
+}

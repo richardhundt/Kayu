@@ -1,0 +1,6 @@
+[
+    [ "first_name", "last_name", "genre", "intro", "books" ],
+    [ "Isaac","Asimov",     "SF", "The big daddy of SF",        "data/asimov_books.json"     ],
+    [ "Neal", "Stephenson", "SF", "Cyberpunk meets historical", "data/stephenson_books.json" ],
+    [ "Harry","Harrison",   "SF", "Fast moving and very funny", "data/harrison_books.json"   ]
+]

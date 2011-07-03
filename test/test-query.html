@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <script type="text/javascript" src="./jslib/ku/core.js"></script>
+</head>
+<body>
+<ul style="display:none">
+  <li id="1">text node 1 <!--comment node--> text node 2</li>
+  <li id="2"><?piTarget piData ?>foo2</li>
+  <li id="3">foo3</li>
+  <li id="4">foo4
+    <div>
+      <a pin="1"><b>b1 text</b></a>
+      <a pin="2"><b>b2 text</b></a>
+      <a pin1="3">
+        <b>
+          <u>no attribute</u>
+          <u tid="red">Red-Taggy</u>
+          <u tid="green">Green-Taggy</u>
+          <u id1="1" id2="2">Multi-Taggy</u>
+        </b>
+      </a>
+    </div>
+  </li>
+</ul>
+<script id="myxml" type="text/xml">
+<rootnode id="root">
+<tag1 id="1">text node 1 <!--comment node--> text node 2</tag1>
+<tag1 id="2"><?piTarget piData ?>foo2</tag1>
+<tag1 id="3">foo3</tag1>
+<tag1 id="4">foo4
+  <tag>
+    <a pin="1"><b>b1 text</b></a>
+    <a pin="2"><b>b2 text</b></a>
+    <a pin1="3">
+      <b>
+        <tag>no attribute</tag>
+        <tag tid="red">Red-Taggy</tag>
+        <tag tid="green">Green-Taggy</tag>
+        <tag id1="1" id2="2">Multi-Taggy</tag>
+      </b>
+    </a>
+  </tag>
+</tag1>
+</rootnode>
+</script>
+
+<script type="text/javascript">
+
+ku.require("ku.test.TestRunner");
+ku.require('ku.xml');
+ku.require('ku.query');
+
+var parser = new ku.xml.Parser;
+var xmldoc = parser.parseFromString(ku.util.unentityfy(ku.get('myxml').innerHTML),'text/xml');
+
+var tests = new ku.test.TestRunner;
+
+tests.add('..b', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 elements');
+  for (var x = 0; x < 3; x++) {
+    this.assert(list[x].nodeName == 'b', 'element '+x+' is a <b> tag')
+  }
+});
+
+tests.add('..tag1', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 4, 'got 4 elements');
+  for (var x = 0; x < 4; x++) {
+    this.assert(list[x].nodeName == 'tag1', 'element '+x+' is a <tag1> tag')
+    this.assert(list[x].getAttribute("id") == x+1, 'element '+x+' has id '+(x+1));
+  }
+});
+
+tests.add('.rootnode.tag1', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 4, 'got 4 elements');
+  for (var x = 0; x < 4; x++) {
+    this.assert(list[x].nodeName == 'tag1', 'element '+x+' is a <tag1> tag')
+    this.assert(list[x].getAttribute("id") == x+1, 'element '+x+' has id '+(x+1));
+  }
+});
+
+tests.add('..tag1.tag.a', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 elements');
+  for (var x = 0; x < 3; x++) {
+    this.assert(list[x].nodeName == 'a', 'element '+x+' is a <a> tag')
+  }
+});
+
+tests.add('..tag1[0]', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+  this.assertEquals(list[0].getAttribute("id"), "1", 'id is "1"');
+});
+
+tests.add('..tag1[-1]', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+  this.assertEquals(list[0].getAttribute("id"), "4", 'id is "4"');
+});
+
+tests.add('..tag1[1]', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+  this.assertEquals(list[0].getAttribute("id"), "2", 'id is "2"');
+});
+
+tests.add('..tag1[0..2]', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 elements');
+  this.assertEquals(list[0].getAttribute("id"), "1", 'id is "1"');
+  this.assertEquals(list[1].getAttribute("id"), "2", 'id is "2"');
+});
+
+tests.add('..tag1[0..-2]', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 elements');
+  this.assertEquals(list[0].getAttribute("id"), "1", 'id is "1"');
+  this.assertEquals(list[1].getAttribute("id"), "2", 'id is "2"');
+});
+
+tests.add('..tag1[0].#text', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 nodes');
+  this.assert(list[0].nodeType == 3, '1 is a text node');
+  this.assert(list[1].nodeType == 3, '2 is a text node');
+  this.assertEquals(list[0].nodeValue, 'text node 1 ', '1 has the right text');
+  this.assertEquals(list[1].nodeValue, ' text node 2', '2 has the right text');
+});
+
+tests.add('..tag1[0].#comment', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 node');
+  this.assert(list[0].nodeType == 8, 'comment node');
+  this.assertEquals(list[0].nodeValue, 'comment node', '1 has the right text');
+});
+
+tests.add('..tag1[0].#node', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 nodes');
+  this.assert(list[0].nodeType == 3, 'text node');
+  this.assert(list[1].nodeType == 8, 'comment node');
+  this.assert(list[2].nodeType == 3, 'text node');
+});
+
+tests.add('..tag1[1].#processing-instruction', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 node');
+  this.assert(list[0].nodeType == 7, 'processing instruction node');
+});
+
+tests.add('..tag1.tag.a.b.*', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 4, 'got 4 nodes');
+});
+
+tests.add('..tag1.tag.a.b.#text', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 nodes');
+});
+
+tests.add('..tag1.tag.a.b.#node', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 6, 'got 6 nodes');
+});
+
+tests.add('.@*', function() {
+    var list = ku.query(xmldoc.documentElement).select(this.id);
+    this.assertEquals(list.length, 1, 'got 1 attribute');
+    this.assertEquals(list[0].nodeName, 'id', 'attribute name is sane');
+    this.assertEquals(list[0].nodeValue, 'root', 'attribute value is sane');
+});
+
+tests.add('..*.@id', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 5, 'got 5 id attributes');
+});
+
+tests.add('..*.@tid', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 tid attributes');
+});
+
+tests.add('..tag1.(@id == 1)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+});
+
+tests.add('..tag1.(@id == "2")', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+});
+
+tests.add("..tag1.(@id == '3')", function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+});
+
+tests.add("..tag1.(@id != 3)", function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 elements');
+});
+
+tests.add("..tag1.(@id != 3)[1]", function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 elements');
+  this.assertEquals(list[0].nodeName, 'tag1', 'tagname is tag1')
+});
+
+tests.add("..tag1.(@id != 3)[2]..a", function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 elements');
+  this.assertEquals(list[0].nodeName, 'a', 'tagname is a')
+  this.assertEquals(list[1].nodeName, 'a', 'tagname is a')
+  this.assertEquals(list[2].nodeName, 'a', 'tagname is a')
+});
+
+tests.add("..tag1.(@id != 3)[2]..a.parent()", function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 elements');
+  this.assertEquals(list[0].nodeName, 'tag', 'tagname is tag')
+});
+
+tests.add('..tag1.tag.a.b.tag.@*', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 4, 'got 4 attributes');
+});
+
+tests.add('..tag1.tag.a.b.tag.@tid', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 elements');
+});
+
+tests.add('..tag1.tag.a.b.tag.(!@tid)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 elements');
+});
+
+tests.add('..tag1.tag.(count("a") == 3)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 elements');
+});
+
+tests.add('..tag1.tag.(count("a") == 4)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 0, 'got 0 elements');
+});
+
+tests.add('..tag1.tag.(count("a") != 4)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 elements');
+});
+
+tests.add('..tag1[3].tag.a.b.tag.(substring(@tid,2) == "een")', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 elements');
+});
+
+tests.add('.rootnode[0].tag1[3]..a', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 3, 'got 3 elements');
+});
+
+tests.add('..*.(@tid=="green")', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+  this.assertEquals(list.item(0).getAttribute("tid"), "green", "tid is green");
+});
+
+tests.add('..*.(@pin >= 1)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 elements');
+  this.assertEquals(list.item(0).getAttribute("pin"), "1", "pin is 1");
+  this.assertEquals(list.item(1).getAttribute("pin"), "2", "pin is 2");
+});
+
+tests.add('..*.(@pin > 0.5)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 2, 'got 2 elements');
+  this.assertEquals(list.item(0).getAttribute("pin"), "1", "pin is 1");
+  this.assertEquals(list.item(1).getAttribute("pin"), "2", "pin is 2");
+});
+
+tests.add('..*.(@pin == 5 % 2)', function() {
+  var list = ku.query(xmldoc).select(this.id);
+  this.assertEquals(list.length, 1, 'got 1 element');
+  this.assertEquals(list.item(0).getAttribute("pin"), "1", "pin is 1");
+});
+
+tests.add('..li.div.a.b.u.@*', function() {
+  var list = ku.query.$(this.id);
+  this.assertEquals(list.length, 4, 'got 4 attributes');
+});
+
+
+</script>
+</body>
+</html>
